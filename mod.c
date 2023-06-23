@@ -1,46 +1,41 @@
 #include "monty.h"
-
 /**
- * f_mod - computes the rest of the division of the second
- * top element of the stack by the top element of the stack
- * @stk: stack head
- * @l_nmb: line_number
+ * f_mod - computes rest of the division of the second
+ * top element of stack by the top element of a stack
+ * @head: the stack head
+ * @counter: line_number
  * Return: no return
- */
-void f_mod(stack_t **stk, unsigned int l_nmb)
+*/
+void f_mod(stack_t **head, unsigned int counter)
 {
-	stack_t *current;
-	int stk_lngt = 0, rslt;
+	stack_t *h;
+	int ln = 0, aux;
 
-	current = *stk;
-	while (current)
+	h = *head;
+	while (h)
 	{
-		current = current->next;
-		stk_lngt++;
+		h = h->next;
+		ln++;
 	}
-
-	if (stk_lngt < 2)
+	if (ln < 2)
 	{
-		fprintf(stderr, "L%d: can't mod, stack too short\n", l_nmb);
+		fprintf(stderr, "L%d: can't mod, stack too short\n", counter);
 		fclose(bus.file);
 		free(bus.content);
-		free_stack(*stk);
+		free_stack(*head);
 		exit(EXIT_FAILURE);
 	}
-
-	current = *stk;
-
-	if (current->n == 0)
+	h = *head;
+	if (h->n == 0)
 	{
-		fprintf(stderr, "L%d: division by zero\n", l_nmb);
+		fprintf(stderr, "L%d: division by zero\n", counter);
 		fclose(bus.file);
 		free(bus.content);
-		free_stack(*stk);
+		free_stack(*head);
 		exit(EXIT_FAILURE);
 	}
-
-	rslt = current->next->n % current->n;
-	current->next->n = rslt;
-	*stk = current->next;
-	free(current);
+	aux = h->next->n % h->n;
+	h->next->n = aux;
+	*head = h->next;
+	free(h);
 }

@@ -2,25 +2,25 @@
 
 /**
  * f_pstr - prints the string starting at the top of the stack,
- * followed by a new
- * @stk: stack head
- * @l_nmb: line_number
+ * followed by a new line
+ * @head: stack head
+ * @counter: line_number
  * Return: no return
  */
-void f_pstr(stack_t **stk, unsigned int l_nmb)
+void f_pstr(stack_t **head, unsigned int counter)
 {
-	stack_t *current;
-	(void)l_nmb;
+	stack_t *hd;
+	(void) counter;
 
-	current = *stk;
-	while (current)
+	hd = *head;
+	while (hd)
 	{
-		if (current->n > 127 || current->n <= 0)
+		if (hd->n > 127 || hd->n <= 0)
 		{
 			break;
 		}
-		printf("%c", current->n);
-		current = current->next;
+		printf("%c", hd->n);
+		hd = hd->next;
 	}
 	printf("\n");
 }
