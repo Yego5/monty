@@ -7,77 +7,74 @@
  */
 void push_func(stack_t **stack, unsigned int line_number)
 {
-	info_t *pg_data = &info;
-	int is_digit, token_len, is_large_num, push_val;
+	bus_t *bus = &bus;
+	int is_digit, str_len, big_number, push_num;
 
 	(void)line_number;
-	if (pg_data->line_tokens[1])
+	if (bus->arg)
 	{
-		token_len = strlen(pg_data->line_tokens[1]);
-		is_digit = _isdigit(pg_data->line_tokens[1]);
+		str_len = strlen(bus->arg);
+		is_digit = _isdigit(bus->arg);
 		if (is_digit)
-			push_val = atoi(pg_data->line_tokens[1]);
-		is_large_num = push_val > (int)INT_MAX;
+			push_num = atoi(bus->arg);
+		big_number = push_num > (int)INT_MAX;
 
-		if (!is_digit || token_len > 10 || is_large_num)
+		if (!is_digit || str_len > 10 || big_number)
 		{
-			free_all(pg_data);
-			prints_error_message_with_args("L%lu: usage: push integer", pg_data);
-			return;
+			fprintf(stderr, "L%u: usage: push integer\n", line_number);
+			fclose(bus->file);
+			free(bus->content);
+			free_stack(*stack);
+			exit(EXIT_FAILURE);
 		}
 
-		push(stack, push_val, pg_data->is_queue);
-		pg_data->stack_length += 1;
+		push(stack, push_num, bus->lifi);
 	}
 	else
 	{
-		free_all(pg_data);
-		prints_error_message_with_args("L%lu: usage: push integer", pg_data);
+		fprintf(stderr, "L%u: usage: push integer\n", line_number);
+		fclose(bus->file);
+		free(bus->content);
+		free_stack(*stack);
+		exit(EXIT_FAILURE);
 	}
 }
 
 /**
  * pall_func - handles pall opcodes
- * @line_number: line number of instruction
  * @stack: head of stack data structure
+ * @line_number: line number of instruction
  */
 void pall_func(stack_t **stack, unsigned int line_number)
 {
-	pall(stack, line_number);
+	(void)line_number;
+	pall(*stack);
 }
 
 /**
  * push - performs push of values onto the stack
- * @val: number to push to stack
  * @head: head of stack data structure
+ * @num: number to push to stack
  * @is_queue: switch between stack and queue modes
  */
-void push(stack_t **head, int val, unsigned int is_queue)
+void push(stack_t **head, int num, unsigned int is_queue)
 {
 	if (is_queue == 1)
-	{
-		insert_at_end(head, val);
-	}
+		addqueue(head, num);
 	else
-	{
-		insert_at_list_start(head, val);
-	}
+		addnode(head, num);
 }
 
 /**
  * pall - performs pall operations
- * @num: stack depth to list
  * @head: head of stack data structure
  */
-void pall(stack_t **head, int num)
+void pall(stack_t *head)
 {
-	stack_t *current = *head;
-	int index = 0;
-
-	while (current != NULL && index < num)
+	while (head != NULL)
 	{
-		printf("%d\n", current->n);
-		current = current->next;
-		index++;
+		printf("%d\n", head->n);
+		head = head->next;
 	}
 }
+
