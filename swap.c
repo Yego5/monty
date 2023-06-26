@@ -1,31 +1,54 @@
 #include "monty.h"
-/**
- * f_swap - adds the top two elements of the stack.
- * @head: stack head
- * @counter: line_number
- * Return: no return
-*/
-void f_swap(stack_t **head, unsigned int counter)
-{
-	stack_t *h;
-	int len = 0, aux;
 
-	h = *head;
-	while (h)
+/**
+ * swap_func - swaps top two elements
+ * @head: head of stack
+ * @line_number: number of stack elements
+ */
+void swap_func(stack_t **head, unsigned int line_number)
+{
+	info_t *pg_data = &info;
+
+	(void)line_number;
+
+	if (pg_data->stack_length < 2)
 	{
-		h = h->next;
-		len++;
+		free_all(pg_data);
+		prints_error_message_with_args("L%lu: can't swap, stack too short", pg_data);
 	}
-	if (len < 2)
-	{
-		fprintf(stderr, "L%d: can't swap, stack too short\n", counter);
-		fclose(bus.file);
-		free(bus.content);
-		free_stack(*head);
-		exit(EXIT_FAILURE);
-	}
-	h = *head;
-	aux = h->n;
-	h->n = h->next->n;
-	h->next->n = aux;
+	swap(head);
+}
+
+/**
+ * swap - handles swaps top two nodes
+ * @head: head of stack
+ */
+void swap(stack_t **head)
+{
+	stack_t *current = *head;
+	int temp;
+
+	if (current == NULL)
+		return;
+
+	temp = current->n;
+	current->n = current->next->n;
+	current->next->n = temp;
+}
+
+/**
+ * nop_func - swaps top two elements
+ * @head: head of stack
+ * @line_number: number of stack elements
+ */
+void nop_func(stack_t **head, unsigned int line_number)
+{
+	info_t *pg_data = &info;
+
+	(void)head;
+	(void)line_number;
+	if (strcmp("queue", pg_data->line_tokens[0]) == 0)
+		pg_data->is_queue = 1;
+	else
+		pg_data->is_queue = 0;
 }
